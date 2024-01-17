@@ -1,0 +1,31 @@
+resources:
+- name: source-code
+  type: git
+  source:
+    uri: https://github.com/saravanansubbiah1/concourse-playground.git
+    branch: main
+
+jobs:
+- name: run-shell-script
+  plan:
+  - get: source-code
+    trigger: true
+  - task: execute-script
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+          tag: latest
+      inputs:
+      - name: source-code
+      run:
+        path: /bin/bash
+        args:
+        - -c
+        - |
+          cd source-code/scripts
+          chmod +x my_script.sh
+          ./my_script.sh
+
